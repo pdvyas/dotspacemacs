@@ -47,7 +47,7 @@ values."
      org
      ;; c-c++
      (c-c++ :variables
-           c-c++-default-mode-for-headers 'c++-mode)
+            c-c++-default-mode-for-headers 'c++-mode)
      clojure
      pd-org-helper
      auto-completion
@@ -65,7 +65,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(git-link)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -133,7 +133,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Menlo"
-                               :size 13
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -274,6 +274,10 @@ in `dotspacemacs/user-config'."
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+  ;; (setq default-process-coding-system '(utf-8 . utf-8))
+  (setq gofmt-command "goimports")
+
+
   (define-key evil-normal-state-map "x" 'er/expand-region)
   (define-key evil-normal-state-map "s" 'er/contract-region)
   (global-set-key (kbd "s-,") 'helm-M-x)
@@ -285,16 +289,16 @@ layers configuration. You are free to put any user code."
   (setq org-directory '"~/Dropbox/org")
   (setq org-default-notes-file (concat org-directory "/capture.org"))
   (setq org-capture-templates
-      '(("r" "Todo" entry (file+headline "~/Dropbox/org/capture.org" "Inbox")
-         "* TODO %?")
-        ("j" "Journal" entry (file+datetree "~/Dropbox/org/journal.org")
-         )))
+        '(("r" "Todo" entry (file+headline "~/Dropbox/org/capture.org" "Inbox")
+           "* TODO %?")
+          ("j" "Journal" entry (file+datetree "~/Dropbox/org/journal.org")
+           )))
   (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                    (org-agenda-files :maxlevel . 9))))
 
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
-        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "SOMEDAY(o)" "|" "CANCELLED(c@/!)")))
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "SOMEDAY(o)" "|" "CANCELLED(c@/!)")))
 
   (defadvice org-archive-subtree (around my-org-archive-subtree activate)
     (let ((org-archive-location
@@ -319,74 +323,74 @@ layers configuration. You are free to put any user code."
   (require 'org-habit)
   (setq org-agenda-files '("~/Dropbox/org"))
   (setq org-agenda-custom-commands
-      '(("a" "Agenda"
-       ((agenda "" nil)
-          (alltodo ""
-                   ((org-agenda-overriding-header "Tasks to Refile")
-                    (org-agenda-files '("~/.org/inbox.org"))
-                    (org-agenda-skip-function
-                     '(oh/agenda-skip :headline-if-restricted-and '(todo)))))
-          (tags-todo "-CANCELLED/!-HOLD-WAITING"
-                     ((org-agenda-overriding-header "Stuck Projects")
+        '(("a" "Agenda"
+           ((agenda "" nil)
+            (alltodo ""
+                     ((org-agenda-overriding-header "Tasks to Refile")
+                      (org-agenda-files '("~/.org/inbox.org"))
                       (org-agenda-skip-function
-                       '(oh/agenda-skip :subtree-if '(inactive non-project non-stuck-project habit scheduled deadline)))))
-          (tags-todo "-WAITING-CANCELLED/!NEXT"
-                     ((org-agenda-overriding-header "Next Tasks")
-                      (org-agenda-skip-function
-                       '(oh/agenda-skip :subtree-if '(inactive project habit scheduled deadline)))
-                      (org-tags-match-list-sublevels t)
-                      (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-          (tags-todo "-CANCELLED/!-NEXT-HOLD-WAITING"
-                     ((org-agenda-overriding-header "Available Tasks")
-                      (org-agenda-skip-function
-                       '(oh/agenda-skip :headline-if '(project)
-                                        :subtree-if '(inactive habit scheduled deadline)
-                                        :subtree-if-unrestricted-and '(subtask)
-                                        :subtree-if-restricted-and '(single-task)))
-                      (org-agenda-sorting-strategy '(category-keep))))
-          (tags-todo "-CANCELLED/!"
-                     ((org-agenda-overriding-header "Currently Active Projects")
-                      (org-agenda-skip-function
-                       '(oh/agenda-skip :subtree-if '(non-project stuck-project inactive habit)
-                                        :headline-if-unrestricted-and '(subproject)
-                                        :headline-if-restricted-and '(top-project)))
-                      (org-agenda-sorting-strategy '(category-keep))))
-          (tags-todo "-CANCELLED/!WAITING|HOLD"
-                     ((org-agenda-overriding-header "Waiting and Postponed Tasks")
-                      (org-agenda-skip-function
-                       '(oh/agenda-skip :subtree-if '(project habit))))))
-         nil)
-        ("r" "Tasks to Refile" alltodo ""
-         ((org-agenda-overriding-header "Tasks to Refile")
-          (org-agenda-files '("~/.org/inbox.org"))))
-        ("#" "Stuck Projects" tags-todo "-CANCELLED/!-HOLD-WAITING"
-         ((org-agenda-overriding-header "Stuck Projects")
-          (org-agenda-skip-function
-           '(oh/agenda-skip :subtree-if '(inactive non-project non-stuck-project
-                                          habit scheduled deadline)))))
-        ("n" "Next Tasks" tags-todo "-WAITING-CANCELLED/!NEXT"
-         ((org-agenda-overriding-header "Next Tasks")
-          (org-agenda-skip-function
-           '(oh/agenda-skip :subtree-if '(inactive project habit scheduled deadline)))
-          (org-tags-match-list-sublevels t)
-          (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
-        ("R" "Tasks" tags-todo "-CANCELLED/!-NEXT-HOLD-WAITING"
-         ((org-agenda-overriding-header "Available Tasks")
-          (org-agenda-skip-function
-           '(oh/agenda-skip :headline-if '(project)
-                            :subtree-if '(inactive habit scheduled deadline)
-                            :subtree-if-unrestricted-and '(subtask)
-                            :subtree-if-restricted-and '(single-task)))
-          (org-agenda-sorting-strategy '(category-keep))))
-        ("p" "Projects" tags-todo "-CANCELLED/!"
-         ((org-agenda-overriding-header "Currently Active Projects")
-          (org-agenda-skip-function
-           '(oh/agenda-skip :subtree-if '(non-project inactive habit)))
-              (org-agenda-sorting-strategy '(category-keep))
-              (org-tags-match-list-sublevels 'indented)))
-        ("w" "Waiting Tasks" tags-todo "-CANCELLED/!WAITING|HOLD"
-         ((org-agenda-overriding-header "Waiting and Postponed Tasks")
-          (org-agenda-skip-function '(oh/agenda-skip :subtree-if '(project habit)))))))
+                       '(oh/agenda-skip :headline-if-restricted-and '(todo)))))
+            (tags-todo "-CANCELLED/!-HOLD-WAITING"
+                       ((org-agenda-overriding-header "Stuck Projects")
+                        (org-agenda-skip-function
+                         '(oh/agenda-skip :subtree-if '(inactive non-project non-stuck-project habit scheduled deadline)))))
+            (tags-todo "-WAITING-CANCELLED/!NEXT"
+                       ((org-agenda-overriding-header "Next Tasks")
+                        (org-agenda-skip-function
+                         '(oh/agenda-skip :subtree-if '(inactive project habit scheduled deadline)))
+                        (org-tags-match-list-sublevels t)
+                        (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+            (tags-todo "-CANCELLED/!-NEXT-HOLD-WAITING"
+                       ((org-agenda-overriding-header "Available Tasks")
+                        (org-agenda-skip-function
+                         '(oh/agenda-skip :headline-if '(project)
+                                          :subtree-if '(inactive habit scheduled deadline)
+                                          :subtree-if-unrestricted-and '(subtask)
+                                          :subtree-if-restricted-and '(single-task)))
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-CANCELLED/!"
+                       ((org-agenda-overriding-header "Currently Active Projects")
+                        (org-agenda-skip-function
+                         '(oh/agenda-skip :subtree-if '(non-project stuck-project inactive habit)
+                                          :headline-if-unrestricted-and '(subproject)
+                                          :headline-if-restricted-and '(top-project)))
+                        (org-agenda-sorting-strategy '(category-keep))))
+            (tags-todo "-CANCELLED/!WAITING|HOLD"
+                       ((org-agenda-overriding-header "Waiting and Postponed Tasks")
+                        (org-agenda-skip-function
+                         '(oh/agenda-skip :subtree-if '(project habit))))))
+           nil)
+          ("r" "Tasks to Refile" alltodo ""
+           ((org-agenda-overriding-header "Tasks to Refile")
+            (org-agenda-files '("~/.org/inbox.org"))))
+          ("#" "Stuck Projects" tags-todo "-CANCELLED/!-HOLD-WAITING"
+           ((org-agenda-overriding-header "Stuck Projects")
+            (org-agenda-skip-function
+             '(oh/agenda-skip :subtree-if '(inactive non-project non-stuck-project
+                                                     habit scheduled deadline)))))
+          ("n" "Next Tasks" tags-todo "-WAITING-CANCELLED/!NEXT"
+           ((org-agenda-overriding-header "Next Tasks")
+            (org-agenda-skip-function
+             '(oh/agenda-skip :subtree-if '(inactive project habit scheduled deadline)))
+            (org-tags-match-list-sublevels t)
+            (org-agenda-sorting-strategy '(todo-state-down effort-up category-keep))))
+          ("R" "Tasks" tags-todo "-CANCELLED/!-NEXT-HOLD-WAITING"
+           ((org-agenda-overriding-header "Available Tasks")
+            (org-agenda-skip-function
+             '(oh/agenda-skip :headline-if '(project)
+                              :subtree-if '(inactive habit scheduled deadline)
+                              :subtree-if-unrestricted-and '(subtask)
+                              :subtree-if-restricted-and '(single-task)))
+            (org-agenda-sorting-strategy '(category-keep))))
+          ("p" "Projects" tags-todo "-CANCELLED/!"
+           ((org-agenda-overriding-header "Currently Active Projects")
+            (org-agenda-skip-function
+             '(oh/agenda-skip :subtree-if '(non-project inactive habit)))
+            (org-agenda-sorting-strategy '(category-keep))
+            (org-tags-match-list-sublevels 'indented)))
+          ("w" "Waiting Tasks" tags-todo "-CANCELLED/!WAITING|HOLD"
+           ((org-agenda-overriding-header "Waiting and Postponed Tasks")
+            (org-agenda-skip-function '(oh/agenda-skip :subtree-if '(project habit)))))))
 
   ;; Clipboard
 
@@ -395,38 +399,24 @@ layers configuration. You are free to put any user code."
 This function is only necessary in window system."
     (interactive)
     (setq interprogram-cut-function nil)
-    (setq interprogram-paste-function nil))
+    (defun pasteboard-copy()
+      "Copy region to OS X system pasteboard."
+      (interactive)
+      (shell-command-on-region
+       (region-beginning) (region-end) "pbcopy"))
 
-  (defun pasteboard-copy()
-    "Copy region to OS X system pasteboard."
-    (interactive)
-    (shell-command-on-region
-     (region-beginning) (region-end) "pbcopy"))
+    (defun pasteboard-paste()
+      "Paste from OS X system pasteboard via `pbpaste' to point."
+      (interactive)
+      (shell-command-on-region
+       (point) (if mark-active (mark) (point)) "pbpaste" nil t))
 
-  (defun pasteboard-paste()
-    "Paste from OS X system pasteboard via `pbpaste' to point."
-    (interactive)
-    (shell-command-on-region
-     (point) (if mark-active (mark) (point)) "pbpaste" nil t))
+    (defun pasteboard-cut()
+      "Cut region and put on OS X system pasteboard."
+      (interactive)
+      (pasteboard-copy)
+      (delete-region (region-beginning) (region-end))))
 
-  (defun pasteboard-cut()
-    "Cut region and put on OS X system pasteboard."
-    (interactive)
-    (pasteboard-copy)
-    (delete-region (region-beginning) (region-end)))
-
-  (progn
-    (isolate-kill-ring)
-    ;; bind CMD+C to pasteboard-copy
-    (global-set-key (kbd "s-c") 'pasteboard-copy)
-    ;; bind CMD+V to pasteboard-paste
-    (global-set-key (kbd "s-v") 'pasteboard-paste)
-    ;; bind CMD+X to pasteboard-cut
-    (global-set-key (kbd "s-x") 'pasteboard-cut))
-  (defun compile-on-save-start ()
-    (let ((buffer (compilation-find-buffer)))
-      (unless (get-buffer-process buffer)
-        (recompile))))
 
   (define-minor-mode compile-on-save-mode
     "Minor mode to automatically call `recompile' whenever the
@@ -437,6 +427,11 @@ nothing happens."
         (progn  (make-local-variable 'after-save-hook)
                 (add-hook 'after-save-hook 'compile-on-save-start nil t))
       (kill-local-variable 'after-save-hook)))
+
+  (defun compile-on-save-start ()
+    (let ((buffer (compilation-find-buffer)))
+      (unless (get-buffer-process buffer)
+        (recompile))))
 
 
   (setq exec-path (append exec-path '("/Applications/Racket\ v6.3/bin")))
@@ -450,13 +445,19 @@ nothing happens."
                             "false")))
   (global-set-key (kbd "s-M-h") 'mac-hide-others)
   (setq eclim-eclipse-dirs "/Applications/Eclipse.app/Contents/Eclipse"
-      eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/plugins/org.eclim_2.5.0/bin/eclim")
+        eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/plugins/org.eclim_2.5.0/bin/eclim")
 
   (setq clojure-enable-fancify-symbols t)
 
-  (setq gofmt-command "goimports")
-
-  )
+(progn
+  (isolate-kill-ring)
+  ;; bind CMD+C to pasteboard-copy
+  (global-set-key (kbd "s-c") 'pasteboard-copy)
+  ;; bind CMD+V to pasteboard-paste
+  (global-set-key (kbd "s-v") 'pasteboard-paste)
+  ;; bind CMD+X to pasteboard-cut
+  (global-set-key (kbd "s-x") 'pasteboard-cut))
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
