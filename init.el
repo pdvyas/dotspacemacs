@@ -26,7 +26,7 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     spacemacs-helm
+     ;;spacemacs-helm
      ;; auto-completion
      ;; better-defaults
      emacs-lisp
@@ -41,6 +41,7 @@ values."
      syntax-checking
      javascript
      go
+     terraform
      java
      version-control
      latex
@@ -49,7 +50,6 @@ values."
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
      clojure
-     pd-org-helper
      auto-completion
      ;; git
      ;; markdown
@@ -65,7 +65,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(git-link)
+   dotspacemacs-additional-packages '(git-link vagrant-tramp)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -127,13 +127,14 @@ values."
    ;;                       leuven
    ;;                       monokai
    ;;                       zenburn)
-   dotspacemacs-themes '(apropospriate-dark leuven)
+   ;; dotspacemacs-themes '(afternoon leuven)
+   dotspacemacs-themes '(smyx professional)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Menlo"
-                               :size 15
+   dotspacemacs-default-font '("Fantasque Sans Mono"
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -285,6 +286,7 @@ layers configuration. You are free to put any user code."
   (define-key evil-normal-state-map ";" 'evil-ex)
   (setq mouse-wheel-scroll-amount '(2 ((shift) . 2) ((control) . nil)))
   (setq mouse-wheel-progressive-speed nil)
+  (electric-pair-mode)
 
   (setq org-directory '"~/Dropbox/org")
   (setq org-default-notes-file (concat org-directory "/capture.org"))
@@ -312,7 +314,7 @@ layers configuration. You are free to put any user code."
 
 
   ;; display teh tags farther right
-  (require 'org-helpers)
+  ;; (require 'org-helpers)
   (setq org-agenda-tags-column -102)
   ;; display the org-habit graph right of the tags
   (setq org-habit-graph-column 102)
@@ -448,6 +450,8 @@ nothing happens."
         eclim-executable "/Applications/Eclipse.app/Contents/Eclipse/plugins/org.eclim_2.5.0/bin/eclim")
 
   (setq clojure-enable-fancify-symbols t)
+  (setq line-spacing nil)
+  (setq org-hide-leading-stars t)
 
 (progn
   (isolate-kill-ring)
@@ -461,3 +465,18 @@ nothing happens."
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yafolding uuidgen hcl-mode powerline mmm-jinja2 yaml-mode railscasts-theme faceup org-projectile org alert log4e gntp org-download omtose-phellack-theme mmm-mode markdown-mode majapahit-theme skewer-mode simple-httpd json-snatcher json-reformat js2-mode parent-mode projectile request haml-mode gitignore-mode fringe-helper git-gutter+ git-gutter flycheck flx eyebrowse evil-visual-mark-mode evil-unimpaired magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree diminish darkokai-theme web-completion-data dash-functional tern pos-tip go-mode company column-enforce-mode clojure-snippets hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue pkg-info clojure-mode epl bind-map bind-key yasnippet packed dash auctex helm avy helm-core async auto-complete popup package-build terraform-mode zonokai-theme zenburn-theme zen-and-art-theme ws-butler window-numbering which-key web-mode web-beautify volatile-highlights vi-tilde-fringe vagrant-tramp use-package underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacemacs-theme spaceline spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smooth-scrolling smeargle slim-mode seti-theme scss-mode sass-mode salt-mode reverse-theme reveal-in-osx-finder restart-emacs rainbow-delimiters racket-mode quelpa purple-haze-theme professional-theme popwin planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el pbcopy pastels-on-dark-theme paradox page-break-lines osx-trash orgit organic-green-theme org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file oldlace-theme occidental-theme obsidian-theme noctilux-theme niflheim-theme neotree naquadah-theme mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme markdown-toc magit-gitflow macrostep lush-theme lorem-ipsum livid-mode linum-relative link-hint light-soap-theme leuven-theme less-css-mode ledger-mode launchctl json-mode js2-refactor js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ indent-guide ido-vertical-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md gandalf-theme flycheck-pos-tip flycheck-ledger flx-ido flatui-theme flatland-theme firebelly-theme fill-column-indicator farmhouse-theme fancy-battery f expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-jumper evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu espresso-theme emmet-mode emacs-eclim elisp-slime-nav dracula-theme django-theme disaster diff-hl define-word darktooth-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-quickhelp company-go company-c-headers company-auctex colorsarenice-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized coffee-mode cmake-mode clues-theme clj-refactor clean-aindent-mode clang-format cider-eval-sexp-fu cherry-blossom-theme busybee-theme buffer-move bubbleberry-theme bracketed-paste birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(terraform-indent-level 4))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
